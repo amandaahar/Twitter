@@ -7,8 +7,16 @@
 //
 
 #import "ComposeViewController.h"
+#import "APIManager.h"
+#import "Tweet.h"
 
 @interface ComposeViewController ()
+
+@property (weak, nonatomic) IBOutlet UITextView *composeTweetText;
+@property (nonatomic, strong) Tweet *composedTweet;
+
+- (IBAction)closeButton:(id)sender;
+- (IBAction)composeTweetButton:(id)sender;
 
 @end
 
@@ -16,6 +24,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    NSString *tweetText = _composeTweetText.text;
+    _composedTweet = [Tweet new];
+    //NSError *error = [NSError new];
+    [[APIManager shared] postStatusWithText:tweetText completion:_composedTweet];
     // Do any additional setup after loading the view.
 }
 
@@ -29,4 +42,10 @@
 }
 */
 
+- (IBAction)closeButton:(id)sender {
+    [self dismissViewControllerAnimated:true completion:nil];
+}
+
+- (IBAction)composeTweetButton:(id)sender {
+}
 @end
