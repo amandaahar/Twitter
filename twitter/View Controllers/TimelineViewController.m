@@ -32,28 +32,11 @@
     
     [self fetchTweets];
     
-    /*
-    self.tweets = [NSArray new];
-    // Get timeline
-    [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray *tweetsArray, NSError *error) {
-        if (tweetsArray) {
-            NSLog(@"😎😎😎 Successfully loaded home timeline");
-            self.tweets = tweetsArray;
-            
-            for (Tweet *tweet in self.tweets) {
-                NSLog(@"%@", [tweet text]);
-            }
-            
-        } else {
-            NSLog(@"😫😫😫 Error getting home timeline: %@", error.localizedDescription);
-        }
-    }];
-     */
+    self.refreshControl = [[UIRefreshControl alloc] init];
     
+    [self.refreshControl addTarget:self action:@selector(fetchTweets) forControlEvents:UIControlEventValueChanged];
+    [self.tweetTableView insertSubview:self.refreshControl atIndex:0];
     
-    
-    
-    // [self.tweetTableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -77,6 +60,8 @@
         } else {
             NSLog(@"😫😫😫 Error getting home timeline: %@", error.localizedDescription);
         }
+        
+        [self.refreshControl endRefreshing];
     }];
     
     
@@ -107,7 +92,11 @@
     cell.nameLabel.text = tweet.user.name;
     cell.screenNameLabel.text = tweet.user.screenName;
     cell.tweetTextLabel.text = tweet.text;
-    // cell.commentButton setI
+    NSString *numRetweets = [NSString stringWithFormat:@"%i", tweet.retweetCount];
+    cell.retweetCountLabel.text = numRetweets;
+    NSString *numLikes = [NSString stringWithFormat:@"%i", tweet.favoriteCount];
+    cell.likeCountButton.text = numLikes;
+    
     
     return cell;
 }
