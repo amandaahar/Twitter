@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *screenName;
+@property (strong, nonatomic) NSString *profileImageURL;
 
 // create initializer to set all properties of a user based off the dictionary returned
 // initializerd are kind of like contructors
