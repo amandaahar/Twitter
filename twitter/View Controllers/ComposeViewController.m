@@ -13,6 +13,7 @@
 @interface ComposeViewController ()
 
 @property (weak, nonatomic) IBOutlet UITextView *composeTweetText;
+
 @property (nonatomic, strong) Tweet *composedTweet;
 
 - (IBAction)closeButton:(id)sender;
@@ -25,13 +26,30 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
+    /*
     NSString *tweetText = _composeTweetText.text;
     _composedTweet = [Tweet new];
     //NSError *error = [NSError new];
-    [[APIManager shared] postStatusWithText:tweetText completion:_composedTweet];
-    // Do any additional setup after loading the view.
+    
+    //[[APIManager shared] postStatusWithText:tweetText:_composedTweet]; // pass in tweet and NSError *error then do if
+    // tweet set the prperty equal to that tweet else do an NS log that throws an error
+    
+    [[APIManager shared] postStatusWithText:tweetText completion:^(Tweet *tweet, NSError *error) {
+        
+        if (tweet) {
+            NSLog(@"Sucessfully posted tweet");
+            self.composedTweet = tweet;
+        } else {
+            NSLog(@"Error composing new tweet %@", error);
+        }
+        
+        
+        // Do any additional setup after loading the view.
+    }];
+     */
+     
 }
-
 /*
 #pragma mark - Navigation
 
@@ -42,10 +60,35 @@
 }
 */
 
+-(void) composeTweet {
+    NSString *tweetText = self.composeTweetText.text; // [_composeTweetText text];
+   
+    //NSError *error = [NSError new];
+    
+    //[[APIManager shared] postStatusWithText:tweetText:_composedTweet]; // pass in tweet and NSError *error then do if
+    // tweet set the prperty equal to that tweet else do an NS log that throws an error
+    
+    [[APIManager shared] postStatusWithText:tweetText completion:^(Tweet *tweet, NSError *error) {
+        
+        if (tweet) {
+            NSLog(@"Sucessfully posted tweet");
+            [self.delegate didTweet:tweet];
+            [self dismissViewControllerAnimated:true completion:nil];
+        } else {
+            NSLog(@"Error composing new tweet %@", error);
+        }
+        
+        
+        // Do any additional setup after loading the view.
+    }];
+    
+}
 - (IBAction)closeButton:(id)sender {
     [self dismissViewControllerAnimated:true completion:nil];
 }
 
 - (IBAction)composeTweetButton:(id)sender {
+    [self composeTweet];
 }
+    
 @end
