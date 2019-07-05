@@ -12,6 +12,8 @@
 #import "TweetCellTableViewCell.h"
 #import "UIImageView+AFNetworking.h"
 #import "ComposeViewController.h"
+#import "AppDelegate.h"
+#import "LoginViewController.h"
 
 
 // VC becomes TV's data source and delegate 
@@ -48,10 +50,9 @@
 }
 
 -(void)fetchTweets {
-    // self.tweets = [NSArray new];
     // Get timeline
     // these API completion blocks allow us to hand code ot the API manager thanit can execute later so
-    // that your programis stuck waitintg on the data
+    // that your program is stuck waitintg on the data
     // API manager calls completion handler; completion black is denoted by the ^
     [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray *tweetsArray, NSError *error) {
         if (tweetsArray) {
@@ -120,19 +121,26 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     //the # of items returned from the API is returned to this function
     return self.tweets.count;
-     /*
-    NSInteger *numOfTweetsOnTimeline = self.tweets.count;
-    return numOfTweetsOnTimeline;
-    */
+    
 }
 
 
 
 - (void)didTweet:(nonnull Tweet *)tweet {
-    // NSArray *newTweet = [NSArray arrayWithObjects:tweet, nil];
-    // self.tweets = [newTweet arrayByAddingObjectsFromArray:self.tweets];
     [self.tweets insertObject:tweet atIndex:0];
     [self.tweetTableView reloadData];
+}
+
+
+- (IBAction)logoutButton:(id)sender {
+    
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LoginViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
+    appDelegate.window.rootViewController = loginViewController;
+    
+    [[APIManager shared] logout];
 }
 
 

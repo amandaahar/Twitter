@@ -27,27 +27,6 @@
     [super viewDidLoad];
     
     
-    /*
-    NSString *tweetText = _composeTweetText.text;
-    _composedTweet = [Tweet new];
-    //NSError *error = [NSError new];
-    
-    //[[APIManager shared] postStatusWithText:tweetText:_composedTweet]; // pass in tweet and NSError *error then do if
-    // tweet set the prperty equal to that tweet else do an NS log that throws an error
-    
-    [[APIManager shared] postStatusWithText:tweetText completion:^(Tweet *tweet, NSError *error) {
-        
-        if (tweet) {
-            NSLog(@"Sucessfully posted tweet");
-            self.composedTweet = tweet;
-        } else {
-            NSLog(@"Error composing new tweet %@", error);
-        }
-        
-        
-        // Do any additional setup after loading the view.
-    }];
-     */
      
 }
 /*
@@ -61,12 +40,7 @@
 */
 
 -(void) composeTweet {
-    NSString *tweetText = self.composeTweetText.text; // [_composeTweetText text];
-   
-    //NSError *error = [NSError new];
-    
-    //[[APIManager shared] postStatusWithText:tweetText:_composedTweet]; // pass in tweet and NSError *error then do if
-    // tweet set the prperty equal to that tweet else do an NS log that throws an error
+    NSString *tweetText = self.composeTweetText.text;
     
     [[APIManager shared] postStatusWithText:tweetText completion:^(Tweet *tweet, NSError *error) {
         
@@ -90,5 +64,7 @@
 - (IBAction)composeTweetButton:(id)sender {
     [self composeTweet];
 }
-    
+
+
+
 @end
