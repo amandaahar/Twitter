@@ -155,14 +155,16 @@
     
     // ... Create the NSURLRequest (myRequest) ...
     
-    [self fetchTweets];
+    // https://developer.twitter.com/en/docs/tweets/timelines/guides/working-with-timelines
+    //^^ explains "paging" concept will need to figure out whst request to make.
     
+    // [self fetchTweets];
     
-    
-    // Configure session so that completion handler is executed on main UI thread
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    
     NSURLSession *session  = [NSURLSession sessionWithConfiguration:configuration delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+    
+    
+   
     
   
 }
