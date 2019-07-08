@@ -118,7 +118,6 @@
     
 }
 - (IBAction)didTapRetweet:(id)sender {
-    NSLog(@"retweet button clicked");
     if (self.tweet.retweeted) {
         self.tweet.retweeted = NO;
         self.tweet.retweetCount -= 1;
