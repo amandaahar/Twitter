@@ -17,12 +17,13 @@
 
 
 // VC becomes TV's data source and delegate 
-@interface TimelineViewController () <ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface TimelineViewController () <ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *tweets;
 // VC has a tableView that is a subview
 @property (weak, nonatomic) IBOutlet UITableView *tweetTableView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (assign, nonatomic) BOOL isMoreDataLoading;
 
 
 @end
@@ -106,7 +107,8 @@
     
     cell.tweet = tweet;
     cell.nameLabel.text = tweet.user.name;
-    cell.screenNameLabel.text = tweet.user.screenName;
+    cell.screenNameLabel.text = [@"@" stringByAppendingString:tweet.user.screenName];
+    
     cell.tweetTextLabel.text = tweet.text;
     NSString *numRetweets = [NSString stringWithFormat:@"%i", tweet.retweetCount];
     cell.retweetCountLabel.text = numRetweets;
@@ -141,6 +143,55 @@
     appDelegate.window.rootViewController = loginViewController;
     
     [[APIManager shared] logout];
+}
+
+-(void)loadMoreData{
+    
+    // ... Create the NSURLRequest (myRequest) ...
+    
+    [self fetchTweets];
+    
+    
+    
+    // Configure session so that completion handler is executed on main UI thread
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    
+    NSURLSession *session  = [NSURLSession sessionWithConfiguration:configuration delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+    
+    /*
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *requestError) {
+        if (requestError != nil) {
+            
+        }
+        else
+        {
+            // Update flag
+            self.isMoreDataLoading = false;
+            
+            // ... Use the new data to update the data source ...
+            
+            // Reload the tableView now that there is new data
+            [self.tweetTableView reloadData];
+        }
+    }];
+    
+    [task resume];
+     */
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if(!self.isMoreDataLoading){
+        // Calculate the position of one screen length before the bottom of the results
+        int scrollViewContentHeight = self.tweetTableView.contentSize.height;
+        int scrollOffsetThreshold = scrollViewContentHeight - self.tweetTableView.bounds.size.height;
+        
+        // When the user has scrolled past the threshold, start requesting
+        if(scrollView.contentOffset.y > scrollOffsetThreshold && self.tweetTableView.isDragging) {
+            self.isMoreDataLoading = true;
+            [self loadMoreData];
+        }
+    }
+    
 }
 
 

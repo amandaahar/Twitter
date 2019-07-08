@@ -21,6 +21,11 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
+     [self.likeButton setImage:[UIImage imageNamed:@"favor-icon-red.png"] forState:UIControlStateSelected | UIControlStateHighlighted];
+     [self.likeButton setImage:[UIImage imageNamed:@"favor-icon.png"] forState:UIControlStateNormal];
+    
+     [self.retweetButton setImage:[UIImage imageNamed:@"favor-icon.png"] forState:UIControlStateSelected | UIControlStateHighlighted];
+    [self.retweetButton setImage:[UIImage imageNamed:@"retweet-icon.png"] forState:UIControlStateNormal];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -32,11 +37,8 @@
 }
 
 -(void) refreshLikeData {
-    if(self.tweet.favorited) {
-        
-        [self.likeButton setImage:[UIImage imageNamed:@"favor-icon-red.png"] forState:UIControlStateSelected | UIControlStateHighlighted];
-        NSString *numLikes = [NSString stringWithFormat:@"%i", self.tweet.favoriteCount];
-        self.likeCountLabel.text = numLikes;
+    if(!self.tweet.favorited) {
+       
         [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
                 NSLog(@"Error favoriting tweet: %@", error.localizedDescription);
@@ -47,10 +49,8 @@
         }];
         
     }
+    else {
     
-        [self.likeButton setImage:[UIImage imageNamed:@"favor-icon.png"] forState:UIControlStateSelected | UIControlStateHighlighted];
-        NSString *numLikes = [NSString stringWithFormat:@"%i", self.tweet.favoriteCount];
-        self.likeCountLabel.text = numLikes;
         [[APIManager shared] unFavorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
                 NSLog(@"Error unfavoriting tweet: %@", error.localizedDescription);
@@ -59,16 +59,20 @@
                 NSLog(@"Successfully unfavorited the following Tweet: %@", tweet.text);
             }
         }];
+    }
+    
+    NSString *numLikes = [NSString stringWithFormat:@"%i", self.tweet.favoriteCount];
+        self.likeCountLabel.text = numLikes;
+    
     
     
 
 }
 
 -(void) refreshRetweetData {
-    if (self.tweet.retweeted) {
-        [self.retweetButton setImage:[UIImage imageNamed:@"retweet-icon-green.png"] forState:UIControlStateSelected | UIControlStateHighlighted];
-        NSString *numRetweets = [NSString stringWithFormat:@"%i", self.tweet.retweetCount];
-        self.retweetCountLabel.text = numRetweets;
+    if (!self.tweet.retweeted) {
+       
+        
         [[APIManager shared] retweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
                 NSLog(@"Error retweeting tweet: %@", error.localizedDescription);
@@ -79,11 +83,8 @@
         }];
         
     }
-    
-    if(!self.tweet.retweeted) {
-        [self.retweetButton setImage:[UIImage imageNamed:@"retweet-icon.png"] forState:UIControlStateSelected | UIControlStateHighlighted];
-        NSString *numRetweets = [NSString stringWithFormat:@"%i", self.tweet.retweetCount];
-        self.retweetCountLabel.text = numRetweets;
+    else {
+     
         [[APIManager shared] unRetweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
                 NSLog(@"Error unretweeting tweet: %@", error.localizedDescription);
@@ -94,6 +95,8 @@
         }];
     }
     
+    NSString *numRetweets = [NSString stringWithFormat:@"%i", self.tweet.retweetCount];
+    self.retweetCountLabel.text = numRetweets;
     
 }
         
@@ -104,7 +107,7 @@
         self.tweet.favorited = NO;
         self.tweet.favoriteCount -= 1;
         [self.likeButton setSelected:NO];
-    } else if (!self.tweet.favorited) {
+    } else  {
         self.tweet.favorited = YES;
         self.tweet.favoriteCount += 1;
         [self.likeButton setSelected:YES];
@@ -120,7 +123,7 @@
         self.tweet.retweeted = NO;
         self.tweet.retweetCount -= 1;
         [self.retweetButton setSelected:NO];
-    } else if (!self.tweet.retweeted) {
+    } else  {
         self.tweet.retweeted = YES;
         self.tweet.retweetCount += 1;
         [self.retweetButton setSelected:YES];
